@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+<!--Config component as what it is -->
+	<context:annotation-config />
+
+	<!-- Scan anntation for componet -->
+	<context:component-scan base-package="com.truonghan.sitemonitoring.backend" />
+
+	<!-- Database -->
+	<bean id="ds"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/sitemonitoring" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>
+	<!-- Entity Manager  -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="ds"/>
+        <!-- Persistence units are defined in a persistence.xml file, which has to be located in the META-INF directory in the classpath -->
+        <property name="persistenceUnitName" value="myUnit"/>
+    </bean>
+    <!-- Transaction Manager-->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    
+    <!-- Transaction annotation -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <!--  JPA Repositories-->
+    <jpa:repositories base-package="com.truonghan.sitemonitoring.backend"/>
+
+
+</beans>

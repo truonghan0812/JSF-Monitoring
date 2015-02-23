@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+
+	<!-- This how message -->
+	<p:growl id="messages" />
+	<p:dataTable var="check" value="#{checkController.checks}"	id="checkTable">
+		<p:column headerText="Check Name">
+			<h:outputText value="#{check.name}" />
+		</p:column>
+		<p:column headerText="Check URL">
+			<a href="#{check.url}"> #{check.url} </a>
+		</p:column>
+		<p:column>
+			<h:form>
+				<p:commandButton value="Edit"
+					action="#{checkController.setCheck(check)}" update=":checkForm" resetValues="true" oncomplete="PF('checkDialog').show();"/>
+				<p:commandButton value="Remove" action="#{checkController.remove(check)}" update=":checkTable, :messages" >
+					 <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+				</p:commandButton>
+			</h:form>
+		</p:column>
+
+	</p:dataTable>
+	<h:form>
+		<p:commandButton value="Add new check" 
+						action="#{checkController.clear()}" 
+						update=":checkForm"
+						oncomplete="PF('checkDialog').show();"
+						resetValues="true"
+						/>
+	</h:form>
+	<p:dialog widgetVar="checkDialog" header="Add new check" modal="true" closeOnEscape="true">	
+		<h:form id="checkForm">
+		<p:messages/>
+			<!-- This focus the element error -->
+			<p:focus />
+			<p:panelGrid>
+			Name:
+			<p:inputText value="#{checkController.check.name}" />
+			Url:
+			<p:inputText value="#{checkController.check.url}" />
+			</p:panelGrid>
+			<p:commandButton value="Save" action="#{checkController.Save()}" update="checkForm, :checkTable" 
+				oncomplete=" handleDialog (args, 'checkDialog')"/>
+			<!-- user colon (:) before id because the table is out side of the form -->
+			
+		</h:form>
+</p:dialog>
+
+
+<h:form>
+	<p:confirmDialog  global="true" showEffect="fade" hideEffect="explode" closeOnEscape="true">
+        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+    </p:confirmDialog>
+</h:form>
+
+<script type="text/javascript">
+	function  handleDialog (args, dialogName){
+			if(!args.validationFailed){
+				PF(dialogName).hide();
+				}
+		}
+</script>
+</h:body>
+</html>
